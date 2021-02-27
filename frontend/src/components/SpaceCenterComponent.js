@@ -1,34 +1,40 @@
-import React from 'react';
+import React, { useState } from "react";
 import LaunchesComponent from "./LaunchesComponent";
 import RocketsComponent from "./RocketsComponent";
 
-class SpaceCenterComponent extends React.Component {
-  
-  state = {
-    rockets: [],
-    launches: []
-  }
-  
-  fetchRockets = () => {
+function SpaceCenterComponent() {
+  const [rockets, setRockets] = useState([]);
+  const [launches, setLaunches] = useState([]);
+
+  function fetchRockets() {
     fetch("https://api.spacexdata.com/v4/rockets")
-        .then(res => res.json())
-        .then(data => this.setState({rockets: data}))
-  };
-  
-  scheduleLaunch = (i) => {
-    if (!this.state.launches.includes(i)) {
-      this.setState({ launches: [...this.state.launches, i] });
-    }
-  };
-  
-  render() {
-    return (
-        <div>
-          <LaunchesComponent launches={this.state.launches} removeLaunch={this.removeLaunch}/>
-          <RocketsComponent rockets={this.state.rockets} fetchRockets={this.fetchRockets} scheduleLaunch={this.scheduleLaunch}/>
-        </div>
-    );
+      .then((res) => res.json())
+      .then((data) => setRockets(data));
   }
+
+  function scheduleLaunch(rocket) {
+    if (!launches.includes(rocket)) {
+      setLaunches([...launches, rocket]);
+    }
+  }
+
+  function removeLaunch(rocketId) {
+    const rockets = this.launches.filter((rkt) => {
+      return rocketId != rkt.id;
+    });
+    setLaunches(rockets);
+  }
+
+  return (
+    <div>
+      <LaunchesComponent launches={launches} removeLaunch={removeLaunch} />
+      <RocketsComponent
+        rockets={rockets}
+        fetchRockets={fetchRockets}
+        scheduleLaunch={scheduleLaunch}
+      />
+    </div>
+  );
 }
 
 export default SpaceCenterComponent;
